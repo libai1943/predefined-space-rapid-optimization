@@ -1,0 +1,47 @@
+reset;
+model NLP_PSRO.mod;
+include NLPFolder\ing.INIVAL;
+option solver ipopt;
+solve;
+
+
+shell ("del " & ("NLPResults\opti_flag.txt"));
+if match (solve_message, "Optimal") > 0 then {
+	printf "1">>("NLPResults\opti_flag.txt");
+}else{
+	printf "0">>("NLPResults\opti_flag.txt");
+};
+close ("NLPResults\opti_flag.txt");
+
+############# x y theta v a phy w   #############
+shell ("del " & ("NLPResults\x.txt"));
+shell ("del " & ("NLPResults\y.txt"));
+shell ("del " & ("NLPResults\theta.txt"));
+shell ("del " & ("NLPResults\v.txt"));
+shell ("del " & ("NLPResults\a.txt"));
+shell ("del " & ("NLPResults\phy.txt"));
+shell ("del " & ("NLPResults\w.txt"));
+
+
+for {i in {1..Nfe}} {
+	printf "%5.6f;", x[i]>>("NLPResults\x.txt");
+	printf "%5.6f;", y[i]>>("NLPResults\y.txt");
+	printf "%5.6f;", theta[i]>>("NLPResults\theta.txt");
+	printf "%5.6f;", v[i]>>("NLPResults\v.txt");
+	printf "%5.6f;", a[i]>>("NLPResults\a.txt");
+	printf "%5.6f;", phy[i]>>("NLPResults\phy.txt");
+	printf "%5.6f;", w[i]>>("NLPResults\w.txt");
+}
+
+close ("NLPResults\x.txt");
+close ("NLPResults\y.txt");
+close ("NLPResults\theta.txt");
+close ("NLPResults\v.txt");
+close ("NLPResults\a.txt");
+close ("NLPResults\phy.txt");
+close ("NLPResults\w.txt");
+
+###################### 	 tf	 ######################
+shell ("del " & ("NLPResults\tf.txt"));
+printf "%5.6f;", tf >> ("NLPResults\tf.txt");
+close ("NLPResults\tf.txt");
