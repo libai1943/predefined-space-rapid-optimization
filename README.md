@@ -1,5 +1,7 @@
 # PSRO: Parking Trajectory Optimization with Half-Space Constraints
 
+[Download ZIP](https://github.com/libai1943/predefined-space-rapid-optimization/archive/refs/heads/main.zip) · [Getting started](#run-one-case-or-the-full-collection) · [Guide](#file-and-function-guide) · [Citation](#citation)
+
 **Search for a feasible route, construct a simpler collision-avoidance problem, and optimize the parking maneuver.** This MATLAB/AMPL repository accompanies **Chapter 3** of the Chinese-language book **《非结构化场景自动驾驶轨迹规划技术》** (*Trajectory Planning Techniques for Autonomous Driving in Unstructured Environments*, English rendering of the Chinese title).
 
 The source paper is **“基于半空间约束理论的自动泊车高性能轨迹优化方法” / “High-performance Trajectory Optimization for Automated Parking via Half-space Constraining Theory”**, published in *Journal of Mechanical Engineering* in 2024. Please cite the paper below when using the method or code.
@@ -57,6 +59,18 @@ OptiViaPSRO();
 Alternatively, run `RunMe`. **The original `RunMe.m` loops over all 115 cases.** To select a single case in that script, change `for ii = 1:115` to, for example, `for ii = 1`. A `case_id` assigned before the unmodified script is overwritten by its loop.
 
 Run from a writable repository folder. Preserve `NLPFolder/` and `NLPResults/`: they are solver exchange directories. `r_PSRO.run` loads generated inputs, invokes IPOPT, records the current solve status and writes the optimized profiles into `NLPResults/`. Check the current status flag before interpreting result files.
+
+### Inspect the most recent solve
+
+Each invocation of `r_PSRO.run` reuses the same filenames. Inspect or copy the outputs immediately after the case you want, before running another case. The script stores trajectory values separated by semicolons.
+
+| Output under `NLPResults/` | Meaning |
+| --- | --- |
+| `opti_flag.txt` | The AMPL script writes 1 when the current solver message contains “Optimal”, otherwise 0. |
+| `tf.txt`, `x.txt`, `y.txt`, `theta.txt` | Maneuver duration and the pose samples along the route. |
+| `v.txt`, `a.txt`, `phy.txt`, `w.txt` | Speed, acceleration, steering angle and steering rate. |
+
+For a numerical check, [`MeasureInfeasibility_.m`](MeasureInfeasibility_.m) takes the seven state/control series and `tf`, then sums squared defects in five discrete dynamics equations. Use this diagnostic alongside the solver status when comparing parameter choices. It measures discretized motion consistency. [AMPL output commands](r_PSRO.run)
 
 ## File and function guide
 
